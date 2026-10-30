@@ -1,0 +1,40 @@
+dataset:
+  path: datasets/openadmet/train_caco2.csv
+  smiles_key: SMILES
+  label_key:
+    - CACO2_Papp_AB_endpoint
+    - CACO2_ER_endpoint
+  operator_key:
+    - OPERATOR_1
+    - OPERATOR_2
+
+split:
+  method: time
+  n_subset: 3
+  method_params:
+    key: mol_id
+    split_size: 0.1
+
+model:
+  architecture: RoFormerRegressor
+  params:
+    loss_fn: bounded-mse
+    num_endpoints: 2
+    num_epochs: 50
+    batch_size: 64
+    label_encoder_params:
+      0: {task_label: CACO2_Papp_AB_endpoint}
+      1: {task_label: CACO2_ER_endpoint}
+
+tuning:
+  architecture_search:
+    config: default
+    budget: 100
+  optimizer_search:
+    config: default
+    budget: 50
+
+output:
+  optimum:
+    path: results/optima/caco2
+    filename: roformer

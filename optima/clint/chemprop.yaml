@@ -1,0 +1,134 @@
+training:
+  num_epochs: 50
+  batch_size: 64
+  stochastic_weight_averaging: false
+  accelerator: gpu
+  devices: 1
+  early_stopping: true
+  patience: 10
+  seed: 0
+datamodule:
+  is_classification: false
+  scaler_type: standard
+  clip: true
+  label_encoder_params:
+    task_labels:
+      0: HLM_CLint_endpoint
+      1: MLM_CLint_endpoint
+    encoder_type: regression
+  label_transform_params:
+    transform_map: null
+    y_clip:
+      Min: 0.0
+      Max: 4.015183448791504
+  batch_size: 64
+  num_workers: 0
+  augment_resonance: false
+  datamodule_type: chemprop
+  input_dim: 217
+  feature_list:
+  - rdkit_all_descriptors
+  engine_params: null
+model:
+  torch_type: chemprop
+  enc_atom_hidden_dim: 960
+  enc_num_layers: 5
+  enc_dropout: 0.1481568680926577
+  enc_activation: relu
+  enc_readout: norm
+  additional_mol_features_dim: 217
+  pred_hidden_dim: 640
+  pred_num_layers: 1
+  pred_dropout: 0.14171867537590643
+  pred_activation: elu
+  num_endpoints: 2
+  loss_fn: bounded-mse
+  optimizer: chemprop
+  optimizer_args:
+    lr: 5.873778445742802e-05
+  scheduler: chemprop
+  scheduler_args:
+    warmup_epochs: 2
+    max_lr: 0.0007969520749058641
+    final_lr: 1.2454050390157471e-06
+metadata:
+  model_type: ChempropRegressor
+  model_version: 404
+  model_name: no name provided
+  model_owner: no owner provided
+  model_scope: no scope provided
+  matcha_version: 0.0.10
+  date: '2026-06-17T16:05:27.771611'
+  description: No description provided
+  extra: {}
+task_type: regression
+calibration: null
+mlflow:
+  experiment: autotune-clint-chemprop
+  run: run
+  tag:
+    architecture: ChempropRegressor
+    dataset: openadmet-clint
+  log_dir: mlflow
+  server_uri: null
+tuning:
+  architecture_search_budget: 100
+  architecture_grid:
+    enc_atom_hidden_dim:
+    - int
+    - low: 256
+      high: 1024
+      step: 64
+    enc_num_layers:
+    - int
+    - low: 2
+      high: 5
+    enc_dropout:
+    - float
+    - low: 0.0
+      high: 0.2
+    enc_activation:
+    - choice
+    - - prelu
+      - leakyrelu
+      - relu
+      - elu
+      - tanh
+    pred_hidden_dim:
+    - int
+    - low: 256
+      high: 1024
+      step: 64
+    pred_num_layers:
+    - int
+    - low: 1
+      high: 4
+    pred_dropout:
+    - float
+    - low: 0.0
+      high: 0.2
+    pred_activation:
+    - choice
+    - - prelu
+      - leakyrelu
+      - relu
+      - elu
+      - tanh
+  optimizer_search_budget: 50
+  optimizer_grid:
+    lr:
+    - float
+    - low: 5.0e-05
+      high: 0.0005
+      log: true
+  scheduler_grid:
+    max_lr:
+    - float
+    - low: 0.0005
+      high: 0.005
+      log: true
+    final_lr:
+    - float
+    - low: 1.0e-06
+      high: 1.0e-05
+      log: true

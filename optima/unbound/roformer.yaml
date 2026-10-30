@@ -1,0 +1,194 @@
+training:
+  num_epochs: 50
+  batch_size: 64
+  stochastic_weight_averaging: false
+  accelerator: gpu
+  devices: 1
+  early_stopping: true
+  patience: 10
+  seed: 0
+datamodule:
+  is_classification: false
+  scaler_type: standard
+  clip: true
+  label_encoder_params:
+    task_labels:
+      0: MPPB_endpoint
+      1: MBPB_endpoint
+      2: MGMB_endpoint
+    encoder_type: regression
+  label_transform_params:
+    transform_map: null
+    y_clip:
+      Min: 0.0
+      Max: 2.00099778175354
+  batch_size: 64
+  num_workers: 0
+  augment_resonance: false
+  datamodule_type: clm
+  max_length: 200
+  num_augmentations: 7
+  num_test_augmentations: 7
+  include_canonical: true
+  dictionary:
+    pad: 0
+    unk: 1
+    cls: 2
+    mask: 3
+    '-': 4
+    /: 5
+    '4': 6
+    Cl: 7
+    '5': 8
+    '[nH]': 9
+    ): 10
+    S: 11
+    '6': 12
+    Br: 13
+    n: 14
+    F: 15
+    '3': 16
+    '[C@H]': 17
+    c: 18
+    '[C@]': 19
+    s: 20
+    '2': 21
+    N: 22
+    '1': 23
+    o: 24
+    C: 25
+    '#': 26
+    (: 27
+    O: 28
+    '=': 29
+    '[C@@H]': 30
+  num_tokens: 31
+model:
+  enc_hidden_dim: 512
+  enc_expansion_dim: 1024
+  enc_num_heads: 8
+  enc_num_layers: 3
+  enc_attention_dropout: 0.14634148362610988
+  enc_hidden_dropout: 0.0049771199247287965
+  enc_num_characters: 31
+  pred_hidden_dims:
+  - 512
+  - 256
+  additional_mol_features_dim: 0
+  num_endpoints: 3
+  loss_fn: bounded-mse
+  loss_args: {}
+  optimizer: adamw
+  optimizer_args:
+    lr: 0.0006656316706218863
+    weight_decay: 0.00011700416702714116
+    betas:
+    - 0.9837568440628159
+    - 0.999
+  scheduler: warmup_linear_decay
+  scheduler_args:
+    min_lr: 8.12108567232599e-05
+    peak_lr_factor: 11.473103326526244
+  torch_type: roformer
+metadata:
+  model_type: RoFormerRegressor
+  model_version: 404
+  model_name: no name provided
+  model_owner: no owner provided
+  model_scope: no scope provided
+  matcha_version: 0.0.10
+  date: '2026-06-17T17:01:02.818818'
+  description: No description provided
+  extra: {}
+task_type: regression
+calibration: null
+mlflow:
+  experiment: autotune-unbound-roformer
+  run: run
+  tag:
+    architecture: RoFormerRegressor
+    dataset: openadmet-unbound
+  log_dir: mlflow
+  server_uri: null
+tuning:
+  architecture_search_budget: 100
+  architecture_grid:
+    enc_hidden_dim:
+    - int
+    - low: 64
+      high: 512
+      step: 64
+    enc_expansion_dim:
+    - choice
+    - - 256
+      - 512
+      - 1024
+      - 2048
+    enc_num_heads:
+    - int
+    - low: 4
+      high: 12
+      step: 2
+    enc_num_layers:
+    - int
+    - low: 2
+      high: 8
+    enc_attention_dropout:
+    - float
+    - low: 0.0
+      high: 0.4
+    enc_hidden_dropout:
+    - float
+    - low: 0.0
+      high: 0.4
+    pred_hidden_dims:
+    - choice
+    - - none
+      - - 256
+      - - 256
+        - 128
+      - - 256
+        - 256
+      - - 512
+        - 256
+      - - 512
+        - 512
+      - - 1024
+        - 1024
+    pred_activation:
+    - choice
+    - - swish
+      - leaky_relu
+      - relu
+      - gelu
+      - mish
+    pred_dropout:
+    - float
+    - low: 0.0
+      high: 0.4
+  optimizer_search_budget: 50
+  optimizer_grid:
+    lr:
+    - float
+    - low: 1.0e-05
+      high: 0.001
+      log: true
+    beta_1:
+    - float
+    - low: 0.8
+      high: 0.999
+    weight_decay:
+    - float
+    - low: 1.0e-06
+      high: 0.01
+      log: true
+  scheduler_grid:
+    min_lr:
+    - float
+    - low: 1.0e-07
+      high: 0.0001
+      log: true
+    peak_lr_factor:
+    - float
+    - low: 2.0
+      high: 20.0

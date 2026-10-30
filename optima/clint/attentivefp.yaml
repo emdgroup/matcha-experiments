@@ -1,0 +1,163 @@
+training:
+  num_epochs: 50
+  batch_size: 64
+  stochastic_weight_averaging: false
+  accelerator: gpu
+  devices: 1
+  early_stopping: true
+  patience: 20
+  seed: 0
+datamodule:
+  is_classification: false
+  scaler_type: standard
+  clip: true
+  label_encoder_params:
+    task_labels:
+      0: HLM_CLint_endpoint
+      1: MLM_CLint_endpoint
+    encoder_type: regression
+  label_transform_params:
+    transform_map: null
+    y_clip:
+      Min: 0.0
+      Max: 4.015183448791504
+  batch_size: 64
+  num_workers: 0
+  augment_resonance: false
+  datamodule_type: graph
+  laplacian_k: 0
+  rwse_k: 20
+  rrwp_k: 20
+  elstatic_k: 0
+  distmat_k: 0
+  compute_distances: true
+  num_virtual_nodes: 1
+  init_virtual_nodes: false
+model:
+  enc_bond_input_dim: 15
+  enc_jk: last
+  enc_num_layers: 5
+  enc_readout: virtualnode
+  pred_hidden_dims:
+  - 256
+  - 128
+  enc_atom_input_dim: 73
+  enc_atom_hidden_dim: 512
+  enc_dropout: 0.002788242358869375
+  enc_laplacian_k: 0
+  enc_rwse_k: 20
+  enc_distmat_k: 0
+  enc_elstatic_k: 0
+  pred_activation: gelu
+  pred_dropout: 0.06123441971705029
+  pred_task_head_dims: null
+  enc_rrwp_k: 20
+  additional_mol_features_dim: 0
+  num_endpoints: 2
+  loss_fn: bounded-mse
+  loss_args: {}
+  optimizer: adamw
+  optimizer_args:
+    lr: 4.9013405598628265e-05
+    weight_decay: 0.0007209712081900871
+    betas:
+    - 0.9865332568995083
+    - 0.999
+  scheduler: warmup_linear_decay
+  scheduler_args:
+    min_lr: 2.3264489667436237e-05
+    peak_lr_factor: 9.187913367354152
+  torch_type: attentivefp
+metadata:
+  model_type: AttentiveFPRegressor
+  model_version: 404
+  model_name: no name provided
+  model_owner: no owner provided
+  model_scope: no scope provided
+  matcha_version: 0.0.10
+  date: '2026-06-17T16:05:27.851394'
+  description: No description provided
+  extra: {}
+task_type: regression
+calibration: null
+mlflow:
+  experiment: autotune-clint-attentivefp
+  run: run
+  tag:
+    architecture: AttentiveFPRegressor
+    dataset: openadmet-clint
+  log_dir: mlflow
+  server_uri: null
+tuning:
+  architecture_search_budget: 100
+  architecture_grid:
+    enc_dropout:
+    - float
+    - low: 0.0
+      high: 0.4
+    enc_atom_hidden_dim:
+    - int
+    - low: 128
+      high: 1024
+      step: 64
+    enc_num_layers:
+    - int
+    - low: 2
+      high: 6
+    pred_hidden_dims:
+    - choice
+    - - none
+      - - 256
+      - - 256
+        - 128
+      - - 256
+        - 256
+      - - 512
+        - 256
+      - - 512
+        - 512
+      - - 1024
+        - 1024
+      - - 256
+        - 256
+        - 256
+      - - 1024
+        - 512
+        - 256
+    pred_activation:
+    - choice
+    - - swish
+      - leaky_relu
+      - relu
+      - gelu
+      - mish
+    pred_dropout:
+    - float
+    - low: 0.0
+      high: 0.4
+  optimizer_search_budget: 50
+  optimizer_grid:
+    lr:
+    - float
+    - low: 1.0e-05
+      high: 0.001
+      log: true
+    beta_1:
+    - float
+    - low: 0.8
+      high: 0.999
+    weight_decay:
+    - float
+    - low: 1.0e-06
+      high: 0.01
+      log: true
+  scheduler_grid:
+    min_lr:
+    - float
+    - low: 1.0e-07
+      high: 0.0001
+      log: true
+    peak_lr_factor:
+    - float
+    - low: 2.0
+      high: 20.0

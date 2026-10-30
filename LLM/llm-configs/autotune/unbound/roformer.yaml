@@ -1,0 +1,43 @@
+dataset:
+  path: datasets/openadmet/train_unbound.csv
+  smiles_key: SMILES
+  label_key:
+    - MPPB_endpoint
+    - MBPB_endpoint
+    - MGMB_endpoint
+  operator_key:
+    - OPERATOR_1
+    - OPERATOR_2
+    - OPERATOR_3
+
+split:
+  method: time
+  n_subset: 3
+  method_params:
+    key: mol_id
+    split_size: 0.1
+
+model:
+  architecture: RoFormerRegressor
+  params:
+    loss_fn: bounded-mse
+    num_endpoints: 3
+    num_epochs: 50
+    batch_size: 64
+    label_encoder_params:
+      0: {task_label: MPPB_endpoint}
+      1: {task_label: MBPB_endpoint}
+      2: {task_label: MGMB_endpoint}
+
+tuning:
+  architecture_search:
+    config: default
+    budget: 100
+  optimizer_search:
+    config: default
+    budget: 50
+
+output:
+  optimum:
+    path: results/optima/unbound
+    filename: roformer

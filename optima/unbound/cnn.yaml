@@ -1,0 +1,184 @@
+training:
+  num_epochs: 50
+  batch_size: 64
+  stochastic_weight_averaging: false
+  accelerator: gpu
+  devices: 1
+  early_stopping: true
+  patience: 10
+  seed: 0
+datamodule:
+  is_classification: false
+  scaler_type: standard
+  clip: true
+  label_encoder_params:
+    task_labels:
+      0: MPPB_endpoint
+      1: MBPB_endpoint
+      2: MGMB_endpoint
+    encoder_type: regression
+  label_transform_params:
+    transform_map: null
+    y_clip:
+      Min: 0.0
+      Max: 2.00099778175354
+  batch_size: 64
+  num_workers: 0
+  augment_resonance: false
+  datamodule_type: clm
+  max_length: 200
+  num_augmentations: 7
+  num_test_augmentations: 7
+  include_canonical: true
+  dictionary:
+    pad: 0
+    unk: 1
+    cls: 2
+    mask: 3
+    (: 4
+    O: 5
+    S: 6
+    C: 7
+    '4': 8
+    '5': 9
+    Br: 10
+    '[C@H]': 11
+    '2': 12
+    n: 13
+    c: 14
+    '[nH]': 15
+    ): 16
+    s: 17
+    '#': 18
+    N: 19
+    '-': 20
+    '[C@@H]': 21
+    '[C@]': 22
+    /: 23
+    o: 24
+    Cl: 25
+    F: 26
+    '1': 27
+    '=': 28
+    '3': 29
+    '6': 30
+  num_tokens: 31
+model:
+  enc_hidden_dim: 256
+  enc_kernel_dims:
+  - 3
+  - 5
+  - 8
+  - 11
+  - 14
+  enc_num_heads: 8
+  enc_num_characters: 31
+  pred_hidden_dims:
+  - 1024
+  - 1024
+  additional_mol_features_dim: 0
+  num_endpoints: 3
+  loss_fn: bounded-mse
+  loss_args: {}
+  optimizer: adamw
+  optimizer_args:
+    lr: 0.000821076938251994
+    weight_decay: 0.00841983278160234
+    betas:
+    - 0.9072291619547533
+    - 0.999
+  scheduler: warmup_linear_decay
+  scheduler_args:
+    min_lr: 9.037840853065774e-05
+    peak_lr_factor: 8.005826946262996
+  torch_type: cnn
+metadata:
+  model_type: CNNRegressor
+  model_version: 404
+  model_name: no name provided
+  model_owner: no owner provided
+  model_scope: no scope provided
+  matcha_version: 0.0.10
+  date: '2026-06-17T16:13:13.717277'
+  description: No description provided
+  extra: {}
+task_type: regression
+calibration: null
+mlflow:
+  experiment: autotune-unbound-cnn
+  run: run
+  tag:
+    architecture: CNNRegressor
+    dataset: openadmet-unbound
+  log_dir: mlflow
+  server_uri: null
+tuning:
+  architecture_search_budget: 100
+  architecture_grid:
+    enc_dropout:
+    - float
+    - low: 0.0
+      high: 0.4
+    enc_activation:
+    - choice
+    - - swish
+      - leaky_relu
+      - relu
+      - gelu
+      - mish
+    pred_hidden_dims:
+    - choice
+    - - none
+      - - 256
+      - - 256
+        - 128
+      - - 256
+        - 256
+      - - 512
+        - 256
+      - - 512
+        - 512
+      - - 1024
+        - 1024
+    enc_num_heads:
+    - int
+    - low: 4
+      high: 12
+      step: 2
+    pred_activation:
+    - choice
+    - - swish
+      - leaky_relu
+      - relu
+      - gelu
+      - mish
+    pred_dropout:
+    - float
+    - low: 0.0
+      high: 0.4
+  optimizer_search_budget: 50
+  optimizer_grid:
+    lr:
+    - float
+    - low: 1.0e-05
+      high: 0.001
+      log: true
+    beta_1:
+    - float
+    - low: 0.8
+      high: 0.999
+    weight_decay:
+    - float
+    - low: 1.0e-06
+      high: 0.01
+      log: true
+  scheduler_grid:
+    min_lr:
+    - float
+    - low: 1.0e-07
+      high: 0.0001
+      log: true
+    peak_lr_factor:
+    - float
+    - low: 2.0
+      high: 20.0

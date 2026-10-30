@@ -1,0 +1,174 @@
+training:
+  num_epochs: 50
+  batch_size: 64
+  stochastic_weight_averaging: false
+  accelerator: gpu
+  devices: 1
+  early_stopping: true
+  patience: 20
+  seed: 0
+datamodule:
+  is_classification: false
+  scaler_type: standard
+  clip: true
+  label_encoder_params:
+    task_labels:
+      0: MPPB_endpoint
+      1: MBPB_endpoint
+      2: MGMB_endpoint
+    encoder_type: regression
+  label_transform_params:
+    transform_map: null
+    y_clip:
+      Min: 0.0
+      Max: 2.00099778175354
+  batch_size: 64
+  num_workers: 0
+  augment_resonance: false
+  datamodule_type: graph
+  laplacian_k: 0
+  rwse_k: 20
+  rrwp_k: 20
+  elstatic_k: 0
+  distmat_k: 0
+  compute_distances: true
+  num_virtual_nodes: 1
+  init_virtual_nodes: false
+model:
+  enc_bond_input_dim: 15
+  enc_num_heads: 8
+  enc_expansion_k: 2
+  enc_distance_k: 10
+  enc_jk: concat
+  enc_num_layers: 6
+  enc_readout: virtualnode
+  pred_hidden_dims:
+  - 256
+  - 128
+  enc_atom_input_dim: 73
+  enc_atom_hidden_dim: 448
+  enc_activation: mish
+  enc_dropout: 0.0034205951809467604
+  enc_laplacian_k: 0
+  enc_rwse_k: 20
+  enc_distmat_k: 0
+  enc_elstatic_k: 0
+  pred_activation: swish
+  pred_dropout: 0.09411225244801871
+  pred_task_head_dims: null
+  enc_rrwp_k: 20
+  additional_mol_features_dim: 0
+  num_endpoints: 3
+  loss_fn: bounded-mse
+  loss_args: {}
+  optimizer: adamw
+  optimizer_args:
+    lr: 3.75840239438375e-05
+    weight_decay: 0.0006535202000464426
+    betas:
+    - 0.9922028091461165
+    - 0.999
+  scheduler: warmup_linear_decay
+  scheduler_args:
+    min_lr: 3.526245811513138e-05
+    peak_lr_factor: 12.311505122732429
+  torch_type: gt
+metadata:
+  model_type: GTRegressor
+  model_version: 404
+  model_name: no name provided
+  model_owner: no owner provided
+  model_scope: no scope provided
+  matcha_version: 0.0.10
+  date: '2026-06-17T16:33:13.421922'
+  description: No description provided
+  extra: {}
+task_type: regression
+calibration: null
+mlflow:
+  experiment: autotune-unbound-gt
+  run: run
+  tag:
+    architecture: GTRegressor
+    dataset: openadmet-unbound
+  log_dir: mlflow
+  server_uri: null
+tuning:
+  architecture_search_budget: 100
+  architecture_grid:
+    enc_dropout:
+    - float
+    - low: 0.0
+      high: 0.4
+    enc_activation:
+    - choice
+    - - swish
+      - leaky_relu
+      - relu
+      - gelu
+      - mish
+    enc_atom_hidden_dim:
+    - int
+    - low: 64
+      high: 512
+      step: 64
+    enc_num_layers:
+    - int
+    - low: 2
+      high: 12
+    pred_hidden_dims:
+    - choice
+    - - none
+      - - 256
+      - - 256
+        - 128
+      - - 256
+        - 256
+      - - 512
+        - 256
+      - - 512
+        - 512
+      - - 1024
+        - 1024
+    enc_num_heads:
+    - int
+    - low: 4
+      high: 12
+      step: 2
+    pred_activation:
+    - choice
+    - - swish
+      - leaky_relu
+      - relu
+      - gelu
+      - mish
+    pred_dropout:
+    - float
+    - low: 0.0
+      high: 0.4
+  optimizer_search_budget: 50
+  optimizer_grid:
+    lr:
+    - float
+    - low: 1.0e-05
+      high: 0.001
+      log: true
+    beta_1:
+    - float
+    - low: 0.8
+      high: 0.999
+    weight_decay:
+    - float
+    - low: 1.0e-06
+      high: 0.01
+      log: true
+  scheduler_grid:
+    min_lr:
+    - float
+    - low: 1.0e-07
+      high: 0.0001
+      log: true
+    peak_lr_factor:
+    - float
+    - low: 2.0
+      high: 20.0

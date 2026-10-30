@@ -1,0 +1,36 @@
+# Note: E3GNNRegressor requires 3D conformers. Update dataset.path to an SDF
+# file with pre-computed conformers if MATCHA does not generate them on-the-fly.
+dataset:
+  path: datasets/openadmet/train_clint.csv
+  smiles_key: SMILES
+  label_key:
+    - HLM_CLint_endpoint
+    - MLM_CLint_endpoint
+  operator_key:
+    - OPERATOR_1
+    - OPERATOR_2
+
+split:
+  method: file
+  n_subset: 1
+  n_bootstrap: 1000
+  frac_bootstrap: 1.0
+  method_params:
+    path:
+      - datasets/openadmet/test_clint.csv
+
+model:
+  architecture: E3GNNRegressor
+  config_path: results/optima/clint/e3gnn.yaml
+  params:
+    loss_fn: bounded-mse
+    num_endpoints: 2
+    num_epochs: 100
+    batch_size: 64
+    label_encoder_params:
+      0: {task_label: HLM_CLint_endpoint}
+      1: {task_label: MLM_CLint_endpoint}
+
+output:
+  serialization:
+    path: results/evaluate/clint/e3gnn

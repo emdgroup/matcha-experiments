@@ -1,0 +1,69 @@
+dataset:
+  task_type: mlm
+  train_smiles: datasets/mlm/train/smiles.parquet
+  val_smiles: datasets/mlm/val/smiles.parquet
+  train_y_graph: null
+  val_y_graph: null
+  train_y_node: null
+  val_y_node: null
+model:
+  architecture: RoFormerMLM
+  params:
+    enc_hidden_dim: 768
+    enc_expansion_dim: 3072
+    enc_num_heads: 12
+    enc_num_layers: 10
+    enc_attention_dropout: 0.1
+    enc_hidden_dropout: 0.1
+    pred_hidden_dims:
+    - 768
+    - 768
+    pred_activation: gelu
+    pred_dropout: 0.1
+    loss_fn: cross_entropy
+    loss_args: {}
+    optimizer: adamw
+    optimizer_args:
+      lr: 1.0e-05
+      weight_decay: 0.01
+    scheduler: warmup_cosine_annealing
+    scheduler_args:
+      total_steps: 473027
+      warmup_ratio: 0.02
+      peak_lr_factor: 30.0
+      min_lr: 1.0e-06
+  datamodule:
+    mask_rate: 0.15
+    max_length: 200
+    add_brics: false
+    num_augmentations: 4
+    num_test_augmentations: 4
+    include_canonical: true
+    batch_size: 128
+    num_workers: 16
+    augment_resonance: false
+  training:
+    num_epochs: 2
+    early_stopping: true
+    patience: 5
+    accelerator: gpu
+    devices: 4
+    seed: 42
+pipe:
+  visible_devices: null
+  strategy:
+    timeout_seconds: 7200
+    find_unused_parameters: false
+  dataloader_num_workers: 16
+  fit_datamodule_size: 1000000
+  gradient_accumulation_steps: 1
+  gradient_clip_val: 1.0
+output:
+  serialization: pretrain/mlm/roformer
+  mlflow:
+    experiment_name: mlm
+    tags: {}
+    log_dir: mlflow
+    run_name: mlm-large
+    server_uri: null
+magic: null

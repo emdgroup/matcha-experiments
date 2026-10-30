@@ -1,0 +1,42 @@
+dataset:
+  path: "datasets/admet-pretraining-public/data.csv"
+  label_key: endpoint
+  smiles_key: SMILES
+  operator_key: null
+  calibration: null
+  statistics: null
+
+model:
+  architecture: GatedGCNRegressor
+  params:
+    num_epochs: 100
+    batch_size: 256
+    patience: 10
+    num_endpoints: 94
+    enc_num_layers: 5
+    enc_atom_hidden_dim: 512
+    enc_dropout: 0.1
+    pred_dropout: 0.1
+    pred_hidden_dims: [512, 512]
+    pred_activation: swish
+    enc_activation: swish
+    loss_fn: mae
+  metadata:
+    model_name: admet-gatedgcn
+    model_version: 1
+    model_scope: pretraining
+    model_owner: Davide Boldini
+    description: no description provided
+  ensemble: null
+  config_path: null
+  calibration: null
+
+output:
+  mlflow:
+    experiment_name: admet
+    tags: {}
+    log_dir: "mlflow"
+    run_name: gatedgcn
+    server_uri: null
+  serialization:
+    path: "pretrain/admet/gatedgcn"

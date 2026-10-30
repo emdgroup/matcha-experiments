@@ -1,0 +1,3 @@
+root_dir: results/evaluate/physchem
+output_path: results/summarize/physchem
+statistical_test: bootstrap

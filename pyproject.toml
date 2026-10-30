@@ -1,0 +1,45 @@
+[project]
+name = "matcha-paper"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy",
+    "pandas",
+    "plotly",
+    "kaleido",
+    "jupyter>=1.1.1",
+    "scipy>=1.17.1",
+    "rdkit",
+    "pillow",
+    "scikit-learn",
+    "xgboost",
+]
+
+[project.optional-dependencies]
+# Pinned to the version used for the paper's performance benchmarks.
+performance = ["emd-matcha[gpu,cli]==0.0.10"]
+# Newer matcha with the MVE uncertainty head — used by the uncertainty
+# benchmark under uncertainty/run_benchmark.py.
+uq-exp = ["emd-matcha[gpu,cli]==0.0.28"]
+wisp-exp = ["emd-matcha[gpu,cli]==0.0.28", "mmpdb==2.1"]
+
+[tool.uv]
+conflicts = [
+    [
+        { extra = "performance" },
+        { extra = "uq-exp" },
+    ],
+    [
+        { extra = "performance" },
+        { extra = "wisp-exp" },
+    ],
+    [
+        { extra = "uq-exp" },
+        { extra = "wisp-exp" },
+    ],
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.3.0",
+]

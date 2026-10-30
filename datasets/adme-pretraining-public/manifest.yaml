@@ -1,0 +1,33 @@
+description: Aggregated ADME pretraining dataset — preprocessed and merged from MSD
+  and Galapagos sources.
+created: '2026-06-10'
+sources:
+  msd-publication:
+    link: https://pubs.acs.org/doi/full/10.1021/acs.jcim.5c00538
+    license: Access from SI of paper
+    description: Public ADME data from publication
+  galapagos-publication:
+    link: https://zenodo.org/records/15602150
+    license: Creative Commons Attribution 4.0 International
+    description: Public ADME data from publication
+  openadmet-train:
+    link: https://huggingface.co/datasets/openadmet/openadmet-expansionrx-challenge-data
+    license: See https://huggingface.co/datasets/openadmet/openadmet-expansionrx-challenge-data
+    description: OpenADMET train splits (physchem, caco2, clint, unbound), bundled
+      from datasets/openadmet/train_*.csv; OPERATOR_x and mol_id columns removed before merging.
+preprocessing_steps:
+- 1. Canonicalize SMILES via RDKit; drop unparseable molecules.
+- 2. Drop columns where all non-NaN values are strings (e.g. OPERATOR, Molecule Name).
+  Cast remaining columns to float64.
+- '3. Skew correction (threshold |skew| > 1.2): log10(y+1) for always-positive high-skew
+  columns; flip + log10(y+1) for always-negative high-skew columns.'
+- 4. Deduplicate columns between MSD and Galapagos datasets via pairwise Pearson correlation
+  (|r| > 0.85); keep MSD version, drop Galapagos duplicate.
+- 5. Aggregate duplicate SMILES within each source by taking the mean.
+- 5b. Add '_endpoint' suffix to all non-SMILES columns.
+- 5c. Drop molecules with molecular weight > 1400 or fewer than 4 heavy atoms.
+- 6. Outer-merge MSD and Galapagos dataframes on canonical SMILES.
+dataset_statistics:
+  n_molecules: 266126
+  n_endpoints: 103
+  sparsity_pct: 98.8

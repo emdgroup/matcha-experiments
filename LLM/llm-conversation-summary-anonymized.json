@@ -1,0 +1,13 @@
+{
+  "first_user_prompt": "<command-message>matcha-data-scientist</command-message>\n<command-name>/matcha-data-scientist</command-name>\n<command-args>run a comprehensive model evaluation for all datasets in datasets/openadmet. First run autotune for all architectures with default grids, 100 architecture search budget, 50 optimizer search budget. Then, run eval using those optima. Compare the models using the bootstrap protocol. Make the configs hierarchically. Include all matcha architectures in the analysis. Make configs only</command-args>",
+  "model": "claude-sonnet-4-6",
+  "_note": "All other conversation entries redacted.",
+  "total_tokens_used": 14310457,
+  "token_usage": {
+    "input_tokens": 4377,
+    "output_tokens": 730912,
+    "cache_read_input_tokens": 4313267,
+    "cache_creation_input_tokens": 9261901,
+    "total": 14310457
+  }
+}

@@ -1,0 +1,34 @@
+dataset:
+  path: datasets/openadmet/train_caco2.csv
+  smiles_key: SMILES
+  label_key:
+    - CACO2_Papp_AB_endpoint
+    - CACO2_ER_endpoint
+  operator_key:
+    - OPERATOR_1
+    - OPERATOR_2
+
+split:
+  method: file
+  n_subset: 1
+  n_bootstrap: 1000
+  frac_bootstrap: 1.0
+  method_params:
+    path:
+      - datasets/openadmet/test_caco2.csv
+
+model:
+  architecture: GatedGCNRegressor
+  config_path: results/optima/caco2/gatedgcn.yaml
+  params:
+    loss_fn: bounded-mse
+    num_endpoints: 2
+    num_epochs: 100
+    batch_size: 64
+    label_encoder_params:
+      0: {task_label: CACO2_Papp_AB_endpoint}
+      1: {task_label: CACO2_ER_endpoint}
+
+output:
+  serialization:
+    path: results/evaluate/caco2/gatedgcn

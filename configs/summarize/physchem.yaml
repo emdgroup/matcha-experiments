@@ -1,0 +1,7 @@
+# matcha summarize — bootstrap comparison for physchem group
+# Each immediate subdirectory of root_dir (one per architecture) is treated as one run.
+# n_bootstrap=1000 in the eval configs produces "{split_idx}_{bootstrap_idx}" keys,
+# so statistical_test must be "bootstrap" (bootstrap percentile CIs + Holm-Bonferroni).
+root_dir: "eval/physchem"
+output_path: "summarize/physchem"
+statistical_test: "bootstrap"

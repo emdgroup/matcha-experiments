@@ -1,0 +1,3 @@
+root_dir: results/evaluate/clint
+output_path: results/summarize/clint
+statistical_test: bootstrap

@@ -1,0 +1,191 @@
+training:
+  num_epochs: 50
+  batch_size: 64
+  stochastic_weight_averaging: false
+  accelerator: gpu
+  devices: 1
+  early_stopping: true
+  patience: 10
+  seed: 0
+datamodule:
+  is_classification: false
+  scaler_type: standard
+  clip: true
+  label_encoder_params:
+    task_labels:
+      0: HLM_CLint_endpoint
+      1: MLM_CLint_endpoint
+    encoder_type: regression
+  label_transform_params:
+    transform_map: null
+    y_clip:
+      Min: 0.0
+      Max: 4.015183448791504
+  batch_size: 64
+  num_workers: 0
+  augment_resonance: false
+  datamodule_type: clm
+  max_length: 200
+  num_augmentations: 7
+  num_test_augmentations: 7
+  include_canonical: true
+  dictionary:
+    pad: 0
+    unk: 1
+    cls: 2
+    mask: 3
+    '[C@H]': 4
+    /: 5
+    '7': 6
+    Cl: 7
+    o: 8
+    '#': 9
+    '3': 10
+    '2': 11
+    Br: 12
+    O: 13
+    '[C@]': 14
+    '[C@@H]': 15
+    '5': 16
+    '-': 17
+    '[C@@]': 18
+    ): 19
+    (: 20
+    S: 21
+    n: 22
+    s: 23
+    '6': 24
+    N: 25
+    c: 26
+    '[N+]': 27
+    '4': 28
+    '[nH]': 29
+    C: 30
+    F: 31
+    '=': 32
+    '[O-]': 33
+    '1': 34
+  num_tokens: 35
+model:
+  enc_rnn_type: gru
+  enc_hidden_dim: 256
+  enc_bidirectional: true
+  enc_num_layers: 1
+  enc_embedding_dim: 100
+  enc_num_heads: 4
+  enc_num_characters: 35
+  pred_hidden_dims:
+  - 1024
+  - 1024
+  additional_mol_features_dim: 0
+  num_endpoints: 2
+  loss_fn: bounded-mse
+  loss_args: {}
+  optimizer: adamw
+  optimizer_args:
+    lr: 0.00011266390271267619
+    weight_decay: 0.00041540711158302707
+    betas: !!python/tuple
+    - 0.8156413969632509
+    - 0.999
+  scheduler: warmup_linear_decay
+  scheduler_args:
+    min_lr: 1.406636164895582e-05
+    peak_lr_factor: 5.6231820073888805
+  torch_type: rnn
+metadata:
+  model_type: RNNRegressor
+  model_version: 404
+  model_name: no name provided
+  model_owner: no owner provided
+  model_scope: no scope provided
+  matcha_version: 0.0.10
+  date: '2026-06-17T16:05:23.969758'
+  description: No description provided
+  extra: {}
+task_type: regression
+calibration: null
+mlflow:
+  experiment: autotune-clint-rnn
+  run: run
+  tag:
+    architecture: RNNRegressor
+    dataset: openadmet-clint
+  log_dir: mlflow
+  server_uri: null
+tuning:
+  architecture_search_budget: 100
+  architecture_grid:
+    enc_dropout:
+    - float
+    - low: 0.0
+      high: 0.4
+    pred_hidden_dims:
+    - choice
+    - - none
+      - - 256
+      - - 256
+        - 128
+      - - 256
+        - 256
+      - - 512
+        - 256
+      - - 512
+        - 512
+      - - 1024
+        - 1024
+    enc_bidirectional:
+    - choice
+    - - true
+      - false
+    enc_hidden_dim:
+    - int
+    - low: 128
+      high: 1024
+      step: 64
+    enc_num_layers:
+    - int
+    - low: 1
+      high: 3
+    enc_num_heads:
+    - int
+    - low: 4
+      high: 12
+      step: 2
+    pred_activation:
+    - choice
+    - - swish
+      - leaky_relu
+      - relu
+      - gelu
+      - mish
+    pred_dropout:
+    - float
+    - low: 0.0
+      high: 0.4
+  optimizer_search_budget: 50
+  optimizer_grid:
+    lr:
+    - float
+    - low: 1.0e-05
+      high: 0.001
+      log: true
+    beta_1:
+    - float
+    - low: 0.8
+      high: 0.999
+    weight_decay:
+    - float
+    - low: 1.0e-06
+      high: 0.01
+      log: true
+  scheduler_grid:
+    min_lr:
+    - float
+    - low: 1.0e-07
+      high: 0.0001
+      log: true
+    peak_lr_factor:
+    - float
+    - low: 2.0
+      high: 20.0

@@ -1,0 +1,146 @@
+training:
+  num_epochs: 50
+  batch_size: 64
+  stochastic_weight_averaging: false
+  accelerator: gpu
+  devices: 1
+  early_stopping: true
+  patience: 20
+  seed: 0
+datamodule:
+  is_classification: false
+  scaler_type: standard
+  clip: true
+  label_encoder_params:
+    task_labels:
+      0: MPPB_endpoint
+      1: MBPB_endpoint
+      2: MGMB_endpoint
+    encoder_type: regression
+  label_transform_params:
+    transform_map: null
+    y_clip:
+      Min: 0.0
+      Max: 2.00099778175354
+  batch_size: 64
+  num_workers: 0
+  augment_resonance: false
+  datamodule_type: tabular
+  input_dim: 2265
+  feature_list:
+  - ECFP_count
+  - rdkit_all_descriptors
+  engine_params: null
+model:
+  hidden_dims:
+  - 1024
+  - 1024
+  activation: mish
+  task_head_dims: null
+  deep_lasso_weight: 0.2037003040339531
+  dropout: 0.3654316870517503
+  additional_mol_features_dim: 2265
+  num_endpoints: 3
+  loss_fn: bounded-mse
+  loss_args: {}
+  optimizer: adamw
+  optimizer_args:
+    lr: 2.7171140888446855e-05
+    weight_decay: 1.5054802810854192e-05
+    betas:
+    - 0.9349289279001989
+    - 0.999
+  scheduler: warmup_linear_decay
+  scheduler_args:
+    min_lr: 2.9871059753329535e-05
+    peak_lr_factor: 7.163931389176978
+  torch_type: mlp
+metadata:
+  model_type: MLPRegressor
+  model_version: 404
+  model_name: no name provided
+  model_owner: no owner provided
+  model_scope: no scope provided
+  matcha_version: 0.0.10
+  date: '2026-06-17T16:38:31.113557'
+  description: No description provided
+  extra: {}
+task_type: regression
+calibration: null
+mlflow:
+  experiment: autotune-unbound-mlp
+  run: run
+  tag:
+    architecture: MLPRegressor
+    dataset: openadmet-unbound
+  log_dir: mlflow
+  server_uri: null
+tuning:
+  architecture_search_budget: 100
+  architecture_grid:
+    dropout:
+    - float
+    - low: 0.0
+      high: 0.4
+    activation:
+    - choice
+    - - swish
+      - leaky_relu
+      - relu
+      - gelu
+      - mish
+    hidden_dims:
+    - choice
+    - - none
+      - - 128
+      - - 256
+      - - 512
+      - - 256
+        - 128
+      - - 256
+        - 256
+      - - 512
+        - 256
+      - - 512
+        - 512
+      - - 1024
+        - 1024
+      - - 128
+        - 128
+        - 128
+      - - 256
+        - 256
+        - 256
+      - - 512
+        - 512
+        - 512
+    deep_lasso_weight:
+    - float
+    - low: 0.0
+      high: 0.4
+  optimizer_search_budget: 50
+  optimizer_grid:
+    lr:
+    - float
+    - low: 1.0e-05
+      high: 0.001
+      log: true
+    beta_1:
+    - float
+    - low: 0.8
+      high: 0.999
+    weight_decay:
+    - float
+    - low: 1.0e-06
+      high: 0.01
+      log: true
+  scheduler_grid:
+    min_lr:
+    - float
+    - low: 1.0e-07
+      high: 0.0001
+      log: true
+    peak_lr_factor:
+    - float
+    - low: 2.0
+      high: 20.0
